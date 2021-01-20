@@ -1,0 +1,479 @@
+<!doctype html>
+<html>
+ <head> 
+  <title>AndiANDRegina.Game</title> 
+   <meta charset="UTF-8"> 
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+   <meta name="author" content="Andi Setiawan Dan Amira shafira regina"/>
+   <meta name="description" content="Ingat Jangan di ubah2 texs nya"/>
+   <meta name="keywords" content="html,css"/>
+   <meta http-equiv="refresh" content="30"/>
+   <meta http-equiv="robots" content="noindex,nofollow"/>  
+  <style>
+body{
+                background-position: center;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                margin: 0px;;
+                padding: 10px;
+                width: 100%;
+                height: 100%;
+                font-family: 'Metal Mania', cursive;
+                background:url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9cT_7Cf1MeEM-b04aVppAGvQJKM5ywp2N_w&usqp=CAU');
+            }
+            .gameContainer{
+                margin: 0 auto;
+                background: transparent;
+            }
+            .gamePianotitle{
+                background:url('https://lh3.googleusercontent.com/pw/ACtC-3flz0nNuyGlkKxbHAc_vnyTjqIqr3ea4HRB434gJNOi1K7Duoxw6S4gWyPA4jPw0MDFJFpvhTl4nBEQJbaHtFkL9ptOqwOsORyQCkoR6Wehq0mymWc2Dlk7J7-4HVrAxV_P7YjRk1zlqCmFLHVRBCcu=w520-h924-no?authuser=0');
+                background-repeat:no-repeat;
+                background-position: -30px 0px;
+                background-attachment: fixed;
+                padding-left:-1px;
+                width: 300px;
+                height: 500px;
+                margin: 0 auto;
+                display: block;
+                border: 1px solid #111;
+                cursor: pointer;
+                border-left: none;
+                box-shadow: 0px 0px 10px #AAA;
+            }
+            .replay{
+                display: none;
+            }
+            .tulis{
+                text-align: center;
+                
+            }
+            .fullButton{
+                width: 300px;
+                padding: 10px 20px;
+                font-size: 1.2rem;
+                font-family: 'Metal Mania', cursive;
+                color: #0CE5FF;
+                background-color: red;
+                margin-top: 10px;
+                border: 1px solid #333;
+                outline: none;
+                cursor: pointer;
+            }
+          #text { 
+margin:px;
+padding:0px;
+color:#FF0CB9;
+font-size:30px;
+font-weight:bolder;
+
+}
+b span { 
+display:table-cell;
+margin:0px;
+padding:0px;
+animation:animate 2s linear infinite;
+}
+b span:nth-child(1) { 
+animation-delay:0.00s;
+}
+b span:nth-child(2) { 
+animation-delay:0.25s;
+}
+b span:nth-child(3) { 
+animation-delay:0.5s;
+}
+b span:nth-child(4) { 
+animation-delay:0.75s;
+}
+b span:nth-child(5) { 
+animation-delay:1.00s;
+}
+b span:nth-child(6) { 
+animation-delay:1.25s;
+}
+b span:nth-child(7) { 
+animation-delay:1.50s;
+}
+b span:nth-child(8) { 
+animation-delay:1.75s;
+}
+
+@keyframes animate { 
+0%, 100% { 
+color:#FF0CB9;
+filter:blur(0px);
+}
+5%, 95% { 
+color:#77e4ff;
+filter:blur(0px);
+text-shadow:none
+}
+
+
+}
+       
+   </style>
+ </head> 
+ <body> 
+<b id="text">
+ <center>
+    <span>F</span> 
+    <span>I</span> 
+    <span>R</span> 
+    <span>A</span> 
+    <span>-</span>
+    <span>T</span> 
+    <span>I</span> 
+    <span>L</span>
+    <span>E</span>
+    <span>S</span>
+   </center></b>
+  <div class="gameContainer" id="gameContainer"> 
+   <canvas width="300" height="500" class="gamePianotitle" id="gameCanvas" onclick="gameMouseClick(event)"></canvas> 
+   <img src="https://postimg.cc/RqDCvkqm" id="replay" class="replay"> 
+  </div> 
+ <script>
+ alert("Terimakasih Telah Membuka Game Kami😄😊 ")
+ alert("Author:Andi Setiawan dan Amira shafira regina")
+ alert("JIka Terjadi Bug Silahkan Lapor di Nomor:                                     Fira:085788801952                         Andi:083151668985")
+ 
+  function _(id) {
+                return document.getElementById(id);
+                
+          
+            }
+
+            var config = {
+                playing: false,
+                isGameOver: false,
+                cols: 4,
+                rows: 5,
+                width: 300,
+                height: 500,
+                speed: 7,
+                tile: {
+                    border: 1,
+                    color: {
+                        default: "#ffcbf8",
+                        clicked: "#77e4ff",
+                        unclicked: "#ff38ff",
+                        wrong: "black"
+                    }
+                },
+                gameInterval: null,
+                score: 0,
+                maxScore: 0,
+                accent: "red",
+                font: "bold 30px arial",
+                fontNormal: "bold 20px monospace",
+                intervalTime: 40,
+                incrementSpeedAfterTile: 10
+            };
+
+            function tileObject() {
+                this.width = config.width / config.cols;
+                this.height = config.height / config.rows;
+                this.x = 0;
+                this.y = 0;
+                this.bgColor = config.tile.color.default;
+                this.borderColor = "#000";
+                this.border = 1;
+                this.clickable = false;
+                this.isClicked = false;
+                this.row = 0;
+                this.col = 0;
+            }
+
+            function init() {
+                tileHolder = [];
+                var halfRow = Math.round(config.rows / 2);
+                var startTile = null;
+                for (var i = 0; i < config.rows + 2; i++) {
+                    var selectedRandomTile = false;
+                    for (var j = 0; j < (config.cols); j++) {
+                        var tile = new tileObject();
+                        tile.x = tile.width * j;
+                        tile.y = config.height - tile.height * i;
+                        tile.row = i;
+                        tile.col = j;
+                        if (!selectedRandomTile) {
+
+                            if (
+                                    (Math.ceil(Math.random() * 5) == 2)
+                                    ||
+                                    j == config.cols - 1
+                                    ) {
+
+                                selectedRandomTile = true;
+                                /*
+                                 * Make starting some tile unclickable for game
+                                 */
+                                if (i >= halfRow) {
+
+                                    if (startTile == null) {
+                                        startTile = tile;
+                                    }
+
+                                    makeTileClickable(tile);
+                                }
+
+                            }
+                        }
+
+                        tileHolder.push(tile);
+                    }
+                }
+                draw();
+                drawStartTile(startTile);
+
+            }
+
+
+         
+            
+            function makeTileClickable(tile) {
+                tile.clickable = true;
+                tile.isClicked = false;
+                tile.bgColor = config.tile.color.unclicked;
+            }
+
+            function draw() {
+                
+                if (config.playing) {
+                    moveToNextFrame();
+                }
+                var c = _("gameCanvas").getContext('2d');
+                c.clearRect(0, 0, config.width, config.height);
+                for (var i = 0; i < tileHolder.length; i++) {
+                    var tempTile = tileHolder[i];
+                    drawTile(tempTile);
+                }
+                
+                
+
+            }
+
+            function drawTile(tempTile) {
+                var c = _("gameCanvas").getContext('2d');
+                c.fillStyle = tempTile.borderColor;
+                c.fillRect(tempTile.x, tempTile.y, tempTile.width, tempTile.height);
+                c.fillStyle = tempTile.bgColor;
+                c.fillRect(tempTile.x + tempTile.border, tempTile.y + tempTile.border,
+                        tempTile.width - tempTile.border, tempTile.height - tempTile.border);
+                c.fill();
+            }
+
+
+            function moveToNextFrame() {
+                var len = tileHolder.length;
+                var maxPosition = getMaxRowPosition();
+                var tempTileHolder = [];
+                for (var i = 0; i < len; i++) {
+                    var tempTile = tileHolder[i];
+
+                   
+                    if (tempTile.clickable) {
+                        if (!tempTile.isClicked) {
+                            if (tempTile.y + tempTile.height + config.speed >= config.height) {
+
+                                tempTile.bgColor = config.tile.color.wrong;
+                                gameOver();
+                            }
+                        }
+                    }
+
+                    if (tempTile.y > config.height) {
+                        //Remove Tile and add new tile or reset existing tile
+                        tempTile.y = maxPosition - tempTile.height;
+                        resetTileExceptXYPosition(tempTile);
+                        tempTileHolder.push(tempTile);
+
+                    }
+                    tempTile.y += config.speed;
+                }
+
+                if (tempTileHolder.length > 0) {
+                    var randomeNumber = Math.ceil(Math.random() * config.cols - 1);
+
+                    makeTileClickable(tempTileHolder[randomeNumber]);
+                }
+
+            }
+
+            function resetTileExceptXYPosition(tile) {
+                var y = tile.y;
+                var x = tile.x;
+                var tempTile = new tileObject();
+                for (var k in tempTile) {
+                    tile[k] = tempTile[k];
+                }
+                tile.y = y;
+                tile.x = x;
+            }
+            function getMaxRowPosition() {
+                var len = tileHolder.length;
+                var maxTile = null;
+                for (var i = 0; i < len; i += config.cols) {
+                    var tempTile = tileHolder[i];
+                    if (maxTile == null) {
+                        maxTile = tempTile;
+                    } else if (maxTile.y > tempTile.y) {
+                        maxTile = tempTile;
+                    }
+                }
+                return maxTile.y;
+            }
+
+            function draw() {
+                
+                if (config.playing) {
+                    moveToNextFrame();
+                }
+                var c = _("gameCanvas").getContext('2d');
+                c.clearRect(0, 0, config.width, config.height);
+                for (var i = 0; i < tileHolder.length; i++) {
+                    var tempTile = tileHolder[i];
+                    drawTile(tempTile);
+                }
+            }
+
+            function startGame() {
+                config.playing = true;
+                config.gameInterval = setInterval(draw, 50);
+            }
+
+            function gameOver() {
+                config.isGameOver = true;
+                config.playing = false;
+                config.score = 0;
+                clearInterval(config.gameInterval);
+                var c = _("gameCanvas").getContext('2d');
+
+                c.font = config.font;
+                c.fillStyle = config.accent;
+                c.textAlign = "center";
+                c.fillText("KAMU KALAH!", config.width / 2, 150);
+                var img = _("replay");
+
+                c.drawImage(img, config.width / 2 - 30, config.height - 50 - 30, 60, 60);
+
+            }
+
+            function getTileInPosition(coords) {
+                var x = coords.x;
+                var y = coords.y;
+                var len = tileHolder.length;
+
+                for (var i = 0; i < len; i++) {
+                    var tempTile = tileHolder[i];
+                    if (x > tempTile.x && x < tempTile.x + tempTile.width) {
+                        if (y > tempTile.y && y < tempTile.y + tempTile.height) {
+                            return tempTile;
+                        }
+                    }
+                }
+                return null;
+
+            }
+
+            function gameMouseClick(e) {
+
+                if (config.isGameOver) {
+                    init();
+                    config.isGameOver = false;
+                    return;
+                } else {
+                    if (!config.playing) {
+                        startGame();
+                    }
+                }
+
+                var x = e.clientX - _("gameCanvas").offsetLeft + window.scrollX;
+                var y = e.clientY - _("gameCanvas").offsetTop + window.scrollY;
+
+                var clickedTile = getTileInPosition({x: x, y: y});
+
+                if (clickedTile != null) {
+                    if (clickedTile.clickable) {
+                        if (!clickedTile.isClicked) {
+                          
+                            clickedTile.isClicked = true;
+                            clickedTile.bgColor = config.tile.color.clicked;
+                            config.score++;
+                        } else {
+                            clickedTile.bgColor = config.tile.color.wrong;
+                            drawTile(clickedTile);
+                            gameOver();
+                        }
+                    } else {
+                        clickedTile.bgColor = config.tile.color.wrong;
+                        drawTile(clickedTile);
+                        gameOver();
+                    }
+                } else {
+                    console.log("Tile Not Found");
+                }
+            }
+
+            function drawText(c) {
+                c.font = config.font;
+                c.fillStyle = config.accent;
+                c.textAlign = "center";
+                c.fillText(config.score, config.width / 2, 30);
+            }
+
+
+            function controleSpeed() {
+                var num = config.incrementSpeedAfterTile;
+                if (config.score % num == num - 1) {
+                    var speed = config.intervalTime - 5 * Math.round(config.score / num);
+                    if (speed < 5) {
+                        speed = 5;
+                    } else {
+                        clearInterval(config.gameInterval);
+                        config.gameInterval = setInterval(draw, speed);
+                    }
+                }
+            }
+
+            function draw() {
+                
+                if (config.playing) {
+                    moveToNextFrame();
+                }
+                
+                
+                var c = _("gameCanvas").getContext('2d');
+                
+                c.clearRect(0, 0, config.width, config.height);
+                
+                for (var i = 0; i < tileHolder.length; i++) {
+                    var tempTile = tileHolder[i];
+                    drawTile(tempTile);
+                }
+                
+                drawText(c);
+                controleSpeed();
+                
+
+            }
+
+
+            function drawStartTile(tile) {
+                var c = _("gameCanvas").getContext('2d');
+                c.font = config.fontNormal;
+                c.fillStyle = config.tile.color.default;
+                c.textAlign = "center";
+                c.textBaseline = "middle";
+                var x = tile.x + tile.width / 2;
+                var y = tile.y + tile.height / 2;
+                c.fillText("Mulai", x, y);
+            }
+            
+            window.onload = function() {
+                init();
+            }
+ </script>
+ </body>
+</html>
